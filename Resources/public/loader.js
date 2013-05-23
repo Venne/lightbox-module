@@ -1,3 +1,3 @@
 $(document).ready(function () {
-	$("a[rel=lightbox]").fancybox();
+	$("a[rel=lightbox]").fancybox({'type' : 'image'});
 });

@@ -24,9 +24,9 @@
 		},
 		"venne": {
 			"configuration": {
-				"includes": [
-					"%modules.lightbox.path%/Resources/config/config.neon"
-				]
+				"extensions": {
+					"lightbox": "LightboxModule\\DI\\LightboxExtension"
+				}
 			}
 		}
 	}
