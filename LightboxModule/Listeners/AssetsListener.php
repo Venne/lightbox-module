@@ -11,11 +11,13 @@
 
 namespace LightboxModule\Listeners;
 
-use AssetsModule\Managers\AssetManager;
+use AssetsModule\CssFileCollection;
+use AssetsModule\JsFileCollection;
 use CmsModule\Content\Presenters\PagePresenter;
 use CmsModule\Events\RenderArgs;
 use CmsModule\Events\RenderEvents;
 use Doctrine\Common\EventSubscriber;
+use Venne\Module\Helpers;
 
 /**
  * @author Josef Kříž <pepakriz@gmail.com>
@@ -23,16 +25,25 @@ use Doctrine\Common\EventSubscriber;
 class AssetsListener implements EventSubscriber
 {
 
-	/** @var AssetManager */
-	protected $assetManager;
+	/** @var JsFileCollection */
+	private $jsFileCollection;
+
+	/** @var CssFileCollection */
+	private $cssFileCollection;
+
+	/** @var Helpers */
+	private $moduleHelpers;
+
+	/** @var string */
+	private $wwwDir;
 
 
-	/**
-	 * @param FileStorage $storage
-	 */
-	public function __construct(AssetManager $assetManager)
+	public function __construct($wwwDir, JsFileCollection $jsFileCollection, CssFileCollection $cssFileCollection, Helpers $moduleHelpers)
 	{
-		$this->assetManager = $assetManager;
+		$this->wwwDir = $wwwDir;
+		$this->jsFileCollection = $jsFileCollection;
+		$this->cssFileCollection = $cssFileCollection;
+		$this->moduleHelpers = $moduleHelpers;
 	}
 
 
@@ -50,10 +61,10 @@ class AssetsListener implements EventSubscriber
 	public function onHeadBegin(RenderArgs $args)
 	{
 		if($args->getPresenter() instanceof PagePresenter) {
-			$this->assetManager->addJavascript('@lightboxModule/fancybox/jquery.mousewheel-3.0.4.pack.js');
-			$this->assetManager->addJavascript('@lightboxModule/fancybox/jquery.fancybox-1.3.4.pack.js');
-			$this->assetManager->addJavascript('@lightboxModule/loader.js');
-			$this->assetManager->addStylesheet('@lightboxModule/fancybox/jquery.fancybox-1.3.4.css');
+			$this->jsFileCollection->addFile($this->wwwDir . '/' . $this->moduleHelpers->expandResource('@lightboxModule/fancybox/jquery.mousewheel-3.0.4.pack.js'));
+			$this->jsFileCollection->addFile($this->wwwDir . '/' . $this->moduleHelpers->expandResource('@lightboxModule/fancybox/jquery.fancybox-1.3.4.pack.js'));
+			$this->jsFileCollection->addFile($this->wwwDir . '/' . $this->moduleHelpers->expandResource('@lightboxModule/loader.js'));
+			$this->cssFileCollection->addFile($this->wwwDir . '/' . $this->moduleHelpers->expandResource('@lightboxModule/fancybox/jquery.fancybox-1.3.4.css'));
 		}
 	}
 }
